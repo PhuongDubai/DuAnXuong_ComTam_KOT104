@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.duanxuong_comtam_kot104.navigation.AppNavigation
 import com.example.duanxuong_comtam_kot104.ui.theme.DuAnXuong_ComTam_KOT104Theme
 
 class MainActivity : ComponentActivity() {
@@ -17,13 +19,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DuAnXuong_ComTam_KOT104Theme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Android")
-                }
+                val navController = rememberNavController()
+                AppNavigation(navController)
             }
         }
     }
