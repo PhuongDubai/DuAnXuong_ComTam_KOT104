@@ -174,20 +174,23 @@ fun ProfileScreen() {
 
         }
         // Thêm các phần tử khác của Column ở đây
-        Image(
-            painter = painterResource(id = R.drawable.anhlogo),
-            contentDescription = "anh logo",
+        Box(
             modifier = Modifier
-                .size(100.dp)
-                .offset(y = -650.dp)
-                .clip(RoundedCornerShape(50.dp))
-                .background(color = Color.White)
                 .border(
-                    width = 8.dp,
+                    width = 10.dp,
                     color = Color.White,
                     shape = RoundedCornerShape(50.dp)
                 )
-        )
+                .offset(y = -650.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logosplash),
+                contentDescription = "anh logo",
+                modifier = Modifier
+                    .size(100.dp)
+            )
+        }
+
     }
 
 
