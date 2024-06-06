@@ -2,46 +2,8 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AddCategoriesScreen">
-        <State />
-      </entry>
       <entry key="EditProfileScreen">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\admin\.android\avd\Pixel_8_Pro_API_30.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-06-05T02:44:26.145512700Z" />
-        </State>
-      </entry>
-      <entry key="ManagerCategoriesScreen">
         <State />
-      </entry>
-      <entry key="ProfileScreen">
-        <State />
-      </entry>
-      <entry key="SuportScreen">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="E:\Android_Virtual\.android\avd\Pixel_8_Pro_API_30.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-06-05T04:51:40.957888900Z" />
-        </State>
       </entry>
       <entry key="app">
         <State />
