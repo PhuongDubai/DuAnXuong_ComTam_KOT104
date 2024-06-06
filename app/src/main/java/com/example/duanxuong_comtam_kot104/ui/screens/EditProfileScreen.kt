@@ -84,16 +84,7 @@ fun EditProfileScreen() {
                     .background(color = Color(0xFF252121)),
                 contentAlignment = Alignment.TopCenter
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.anhlogo),
-                    contentDescription = "anh logo",
-                    modifier = Modifier
-                        .offset(y=-50.dp)
-                        .size(100.dp)
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(color = Color.White)
 
-                )
                 // Nội dung của Box ở đây
                 Column(
                     modifier = Modifier
@@ -199,7 +190,16 @@ fun EditProfileScreen() {
 
             }
             // Thêm các phần tử khác của Column ở đây
+            Image(
+                painter = painterResource(id = R.drawable.anhlogo),
+                contentDescription = "anh logo",
+                modifier = Modifier
+                    .offset(y=-650.dp)
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(color = Color.White)
 
+            )
 
         }
 
