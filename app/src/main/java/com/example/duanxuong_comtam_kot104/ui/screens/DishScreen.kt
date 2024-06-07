@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
 import com.example.duanxuong_comtam_kot104.ui.components.MyToolbar
 
@@ -76,15 +79,38 @@ val MonAnList = listOf(
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListMonAnScreen(onBackClick: () -> Unit) {
+fun DishScreen(navController: NavController) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var selectedMonAn by remember { mutableStateOf<MonAn?>(null) }
 
     Scaffold(
         topBar = {
-            MyToolbar(
-                title = "Danh sách món ăn",
-                onBackClick = onBackClick
+            TopAppBar(
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(id = R.drawable.logo),
+                            contentDescription = "Logo",
+                            modifier = Modifier.size(50.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Quản lý món ăn", color = Color.White)
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color("#221F1F".toColorInt()),
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSecondary
+                )
             )
         },
         content = { innerPadding ->
@@ -257,19 +283,5 @@ fun DeleteMonAnDialog(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ListMonAnScreenPreview() {
-    ListMonAnScreen(onBackClick = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    DeleteMonAnDialog(monAn = MonAn(1, "Cơm tấm", 30, R.drawable.img_monan), onConfirmDelete = { /* TODO */ }) {
-        // Dismiss action
     }
 }

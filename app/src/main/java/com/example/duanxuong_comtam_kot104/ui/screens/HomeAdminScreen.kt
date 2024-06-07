@@ -1,199 +1,141 @@
 package com.example.duanxuong_comtam_kot104.ui.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.duanxuong_comtam_kot104.R
-import com.example.duanxuong_comtam_kot104.navigation.BottomNavigationBar
-import org.xmlpull.v1.sax2.Driver
+import com.example.comtam_kotlin_room.utils.Route
+
+data class ListItem(val title: String, val description: String, val price: String)
 
 @Composable
-fun HomeAdminScreen(navController: NavHostController, selectedTab: Int, onTabSelected: (Int) -> Unit) {
-    val innerNavController = rememberNavController()
-    var selectedTab by remember { mutableIntStateOf(0) }
-    val titles = listOf("Make home", "Statistics", "Manage", "Support")
+fun HomeAdminScreen(navigationController: NavHostController) {
+    val itemsList = listOf(
+        ListItem("Đơn hàng CT2E22E", "Từ chối", "100.000 đ"),
+        ListItem("Đơn hàng CT2E2206", "Chấp nhận", "500.000 đ"),
+        ListItem("Đơn hàng CT2E23E", "Từ chối", "100.800 đ"),
+        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+
+        )
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF282222)) // Background color
-    ) {
-        Box (
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF282222)) // Background color
-                .padding(16.dp)
-        ){
-            Header()
-        }
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(4.dp),
-            color = Color.Black
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF282222)) // Background color
-                .padding(16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Statistics()
-            Spacer(modifier = Modifier.height(16.dp))
-            OrdersList()
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(2.dp),
-            color = Color.Black
-        )
-        BottomNavigationBar(selectedTab = selectedTab, onTabSelected = onTabSelected)
-    }
-
-}
-
-@Composable
-fun Header() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = painterResource(id = R.drawable.logosplash), // Replace with your profile icon
-                contentDescription = "Profile",
-                modifier = Modifier.size(40.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Cum tấm dim",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        Icon(
-            imageVector = Icons.Filled.Notifications,
-            contentDescription = "Notifications",
-            modifier = Modifier.size(24.dp),
-            tint = Color.Yellow
-        )
-    }
-}
-
-@Composable
-fun Statistics() {
-    Column(
+            .background(Color(0xff252121)),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Today: 19-05-2023",
+            text = "Today:23-09-2024 ",
+            style = MaterialTheme.typography.titleMedium,
             color = Color.White,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            modifier = Modifier.padding(top = 16.dp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Số lượng đơn: 2",
+            text = "Số lượng đơn: 1",
+            style = MaterialTheme.typography.titleMedium,
             color = Color.White,
-            fontSize = 18.sp
         )
-        Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Doanh thu : 320.000 đ",
-            color = Color.Red,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            text = "Doanh thu: 500.000 đ",
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White,
         )
+        LazyColumn(
+            modifier = Modifier
+                .padding(top = 7.dp, start = 16.dp, end = 16.dp)
+                .fillMaxSize()
+                .background(Color(0xff252121))
+        )
+        {
+            items(itemsList) { item ->
+                ListItemView(item = item, navigationController = navigationController)
+            }
+        }
     }
 }
 
 @Composable
-fun OrdersList() {
-    Column {
-        OrderItem(orderId = "CT2E22E", amount = "162.000 đ", status = "Từ chối")
-        OrderItem(orderId = "CT2E206", amount = "157.000 đ", status = "Từ chối")
-        OrderItem(orderId = "CT2E23E", amount = "160.000 đ", status = "Chấp nhận")
-        OrderItem(orderId = "CT2E12E", amount = "160.000 đ", status = "Chấp nhận")
-    }
-}
-
-@Composable
-fun OrderItem(orderId: String, amount: String, status: String) {
-    val statusColor = if (status == "Chấp nhận") Color.Red else Color.Gray
-    Column(
+fun ListItemView(item: ListItem, navigationController: NavHostController) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 10.dp, horizontal = 5.dp)
-            .background(Color.DarkGray, shape = RoundedCornerShape(10.dp))
-            .padding(16.dp)
+            .padding(top = 10.dp)
+            .clickable{navigationController.navigate(Route.DetailCart.screen)}
+            .height(110.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+//        colors = CardDefaults.cardColors(containerColor = Color(0x2F2D2D))
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Đơn hàng $orderId",
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = amount,
-                color = Color.White,
-                fontSize = 16.sp
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Trạng thái",
-                color = Color.White,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = status,
-                color = statusColor,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.DarkGray) // Màu nền của Card
 
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 15.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = item.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                    )
+                    Text(
+                        text = "||",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 20.dp)
+                            .clickable {
+                                navigationController.navigate(Route.DetailCart.screen)
+                            }
+                    )
+                    Text(
+                        text = item.price,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        modifier = Modifier.padding(end = 10.dp, bottom = 10.dp)
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Trạng Thái",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                    )
+                    Text(
+                        text = item.description,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Red,
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                }
+            }
+        }
     }
 }

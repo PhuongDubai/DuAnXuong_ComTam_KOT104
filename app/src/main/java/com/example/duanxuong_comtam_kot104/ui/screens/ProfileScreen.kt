@@ -32,9 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.duanxuong_comtam_kot104.R
 
-@Preview(showBackground = true)
 @Composable
-
 fun ProfileScreen() {
     Column(
         modifier = Modifier
@@ -188,6 +186,4 @@ fun ProfileScreen() {
                 )
         )
     }
-
-
 }
