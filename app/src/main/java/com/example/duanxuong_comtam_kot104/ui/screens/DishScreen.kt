@@ -6,13 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.toColorInt
-import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
+import com.example.duanxuong_comtam_kot104.ui.components.MySpinner
 import com.example.duanxuong_comtam_kot104.ui.components.MyToolbar
 
 data class MonAn(
@@ -77,40 +76,23 @@ val MonAnList = listOf(
         imageResId = R.drawable.img_monan,
     ),
 )
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DishScreen(navController: NavController) {
+fun DishScreen(onBackClick: () -> Unit) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
     var selectedMonAn by remember { mutableStateOf<MonAn?>(null) }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = R.drawable.logo),
-                            contentDescription = "Logo",
-                            modifier = Modifier.size(50.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "Quản lý món ăn", color = Color.White)
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color("#221F1F".toColorInt()),
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSecondary
-                )
+            MyToolbar(
+                title = "Danh sách món ăn",
+                onBackClick = onBackClick,
+                onAddClick = {
+                    showAddDialog=true;
+                }
             )
         },
         content = { innerPadding ->
@@ -124,7 +106,8 @@ fun DishScreen(navController: NavController) {
                 MonAnList(
                     items = MonAnList,
                     onEditClick = { item ->
-                        // Handle edit click event here
+                        selectedMonAn = item
+                        showEditDialog = true
                     },
                     onDeleteClick = { item ->
                         selectedMonAn = item
@@ -141,6 +124,27 @@ fun DishScreen(navController: NavController) {
                     },
                     onDismissRequest = {
                         showDeleteDialog = false
+                    }
+                )
+            }
+            if (showEditDialog && selectedMonAn != null) {
+                EditMonAnDialog(
+                    monAn = selectedMonAn!!,
+                    onConfirmEdit = {
+                        // Xử lý sự kiện khi xóa món ăn
+                        showEditDialog = false
+                    },
+                    onDismiss = {
+                        showEditDialog = false
+                    }
+                )
+            }
+            if (showAddDialog) {
+                AddMonAnDialog(
+                    onDismiss = { showAddDialog = false },
+                    onConfirmAdd = {
+                        // Xử lý khi xác nhận thêm món ăn
+                        showAddDialog = false
                     }
                 )
             }
@@ -214,6 +218,210 @@ fun MonAnItem(
     }
 }
 
+//dialog thêm
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddMonAnDialog(onDismiss: () -> Unit,    onConfirmAdd: () -> Unit,) {
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        Surface(
+            modifier = Modifier
+                .width(300.dp)
+                .height(500.dp),
+            shape = RoundedCornerShape(8.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(800.dp)
+                    .background(color = Color("#221F1F".toColorInt()))
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val items_loaimon = listOf("Món chính", "Món phụ", "Đồ uống")
+                var selectedItem_loaimon by remember { mutableStateOf(items_loaimon.first()) }
+                var items_gia = listOf("5k-100k", "100k-500k", "Trên 500k")
+                var selectedItem_gia by remember { mutableStateOf(items_gia.first()) }
+
+                Image(
+                    painter = painterResource(id = R.drawable.img_addmonan),
+                    contentDescription = "AddImage",
+                    modifier = Modifier.size(150.dp)
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = "Loại món", color = Color.White, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(10.dp))
+                MySpinner(
+                    items = items_loaimon,
+                    selectedItem = selectedItem_loaimon,
+                    onItemSelected = { selectedItem_loaimon = it }
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = "Giá", color = Color.White, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(10.dp))
+                MySpinner(
+                    items = items_gia,
+                    selectedItem = selectedItem_gia,
+                    onItemSelected = { selectedItem_gia = it }
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Tên món ăn",
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                var tenMonAn by remember { mutableStateOf("") }
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(25.dp)
+                        .background(Color.White, shape = RoundedCornerShape(5.dp)),
+                    value = tenMonAn,
+                    onValueChange = { tenMonAn = it },
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(
+                        onClick = { onDismiss() },
+                        modifier = Modifier
+                            .width(110.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color("#E0AB3C".toColorInt()),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(text = "Hủy", fontSize = 14.sp)
+                    }
+                    Button(
+                        onClick = {onConfirmAdd()},
+                        modifier = Modifier
+                            .width(110.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color("#E0AB3C".toColorInt()),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(text = "Xác nhận", fontSize = 14.sp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+//dialog sửa
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditMonAnDialog(
+    monAn: MonAn,
+    onConfirmEdit: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        Surface(
+            modifier = Modifier
+                .width(300.dp)
+                .height(500.dp),
+            shape = RoundedCornerShape(8.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(800.dp)
+                    .background(color = Color("#221F1F".toColorInt()))
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                var items_gia = listOf("5k-100k", "100k-500k", "Trên 500k")
+                var selectedItem_gia by remember { mutableStateOf(items_gia.first()) }
+
+                Image(
+                    painter = painterResource(id = R.drawable.img_monan_edit),
+                    contentDescription = "AddImage",
+                    modifier = Modifier
+                        .size(150.dp)
+//                        .shadow(
+//                            elevation = 25.dp,
+//                            shape = RoundedCornerShape(20.dp),
+//                            ambientColor = Color.White.copy(alpha = 0.1f),
+//                            spotColor = Color.White.copy(alpha = 0.1f)
+//                        )
+                        .clip(RoundedCornerShape(20.dp))
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Tên món ăn",
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                var tenMonAn by remember { mutableStateOf("") }
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(25.dp)
+                        .background(Color.White, shape = RoundedCornerShape(5.dp)),
+                    value = tenMonAn,
+                    onValueChange = { tenMonAn = it },
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = "Giá", color = Color.White, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(10.dp))
+                MySpinner(
+                    items = items_gia,
+                    selectedItem = selectedItem_gia,
+                    onItemSelected = { selectedItem_gia = it }
+                )
+
+
+                Spacer(modifier = Modifier.height(30.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(
+                        onClick = { onDismiss() },
+                        modifier = Modifier
+                            .width(110.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color("#E0AB3C".toColorInt()),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(text = "Hủy", fontSize = 14.sp)
+                    }
+                    Button(
+                        onClick = {onConfirmEdit()},
+                        modifier = Modifier
+                            .width(110.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color("#E0AB3C".toColorInt()),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(text = "Xác nhận", fontSize = 14.sp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+//dialog xóa
 @Composable
 fun DeleteMonAnDialog(
     monAn: MonAn,
@@ -284,4 +492,32 @@ fun DeleteMonAnDialog(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ListMonAnScreenPreview() {
+    DishScreen(onBackClick = {})
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Preview() {
+    DeleteMonAnDialog(
+        monAn = MonAn(1, "Cơm tấm", 30, R.drawable.img_monan),
+        onConfirmDelete = { /* TODO */ }) {
+        // Dismiss action
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewDiaLogAdd() {
+    AddMonAnDialog(onDismiss = {}, onConfirmAdd = {})
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewDiaLogEdit() {
+    EditMonAnDialog(        monAn = MonAn(1, "Cơm tấm", 30, R.drawable.img_monan),onDismiss = {}, onConfirmEdit = {})
 }

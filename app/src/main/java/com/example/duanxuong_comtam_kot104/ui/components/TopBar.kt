@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,14 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
-import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyToolbar(
     title: String,
-    navController: NavController
+    onBackClick: () -> Unit,
+    onAddClick: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -39,15 +40,22 @@ fun MyToolbar(
                     modifier = Modifier.size(50.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = title,color = Color.White)
-
+                Text(text = title, color = Color.White)
             }
         },
         navigationIcon = {
-            IconButton(onClick = {navController.popBackStack()}) {
+            IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back"
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onAddClick) {
+                Icon(
+                    imageVector = Icons.Default.AddCircle,
+                    contentDescription = "Add"
                 )
             }
         },
@@ -57,6 +65,5 @@ fun MyToolbar(
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
             actionIconContentColor = MaterialTheme.colorScheme.onSecondary
         )
-
     )
 }
