@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
 import com.example.duanxuong_comtam_kot104.ui.components.MySpinner
 import com.example.duanxuong_comtam_kot104.ui.components.MyToolbar
@@ -79,7 +80,7 @@ val MonAnList = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DishScreen(onBackClick: () -> Unit) {
+fun DishScreen(navController: NavController,onBackClick: () -> Unit) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
@@ -492,32 +493,4 @@ fun DeleteMonAnDialog(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ListMonAnScreenPreview() {
-    DishScreen(onBackClick = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    DeleteMonAnDialog(
-        monAn = MonAn(1, "Cơm tấm", 30, R.drawable.img_monan),
-        onConfirmDelete = { /* TODO */ }) {
-        // Dismiss action
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewDiaLogAdd() {
-    AddMonAnDialog(onDismiss = {}, onConfirmAdd = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewDiaLogEdit() {
-    EditMonAnDialog(        monAn = MonAn(1, "Cơm tấm", 30, R.drawable.img_monan),onDismiss = {}, onConfirmEdit = {})
 }

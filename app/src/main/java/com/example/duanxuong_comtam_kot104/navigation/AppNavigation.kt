@@ -37,7 +37,7 @@ fun AppNavigation(navController: NavHostController) {
             SuportScreen(navController)
         }
         composable(Route.AddCategory.screen) { AddCategoriesScreen(navController) }
-        composable(Route.Dish.screen) { DishScreen(navController) }
+        composable(Route.Dish.screen) { DishScreen(navController, {navController.popBackStack()}) }
         composable(route = "ManagerCategory") {
             ManagerCategoriesScreen(navController)
         }

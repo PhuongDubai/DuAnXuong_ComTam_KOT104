@@ -43,6 +43,7 @@ import com.example.comtam_kotlin_room.ui.screen.thongke.ThongKe
 import com.example.comtam_kotlin_room.utils.Route
 import com.example.duanxuong_comtam_kot104.R
 import com.example.duanxuong_comtam_kot104.ui.screens.DetailsCart
+import com.example.duanxuong_comtam_kot104.ui.screens.DishScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.HomeAdminScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.SuportScreen
 
@@ -66,7 +67,6 @@ fun MyBottomAppBar(navController: NavHostController) {
     }
     Scaffold (
         topBar = {
-
             Column(Modifier.fillMaxWidth()) {
                 TopAppBar(
                     title = {
@@ -176,6 +176,7 @@ fun MyBottomAppBar(navController: NavHostController) {
             composable(Route.Home.screen) { HomeAdminScreen(navigationController) }
             composable(Route.DetailCart.screen) { DetailsCart(navigationController) }
             composable(Route.THONGKE.screen) { ThongKe(navigationController) }
+            composable(Route.Dish.screen) { DishScreen(navController, {navController.popBackStack()}) }
             composable(Route.Manage.screen) { ManagerScreen(navigationController) }
             composable(Route.Support.screen) { SuportScreen(navigationController) }
         }
