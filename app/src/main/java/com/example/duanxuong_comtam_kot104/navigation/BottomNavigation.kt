@@ -1,9 +1,7 @@
 package com.example.duanxuong_comtam_kot104.navigation
 
 import ManagerScreen
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,16 +21,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -43,14 +36,17 @@ import androidx.navigation.compose.rememberNavController
 import com.example.comtam_kotlin_room.ui.screen.thongke.ThongKe
 import com.example.comtam_kotlin_room.utils.Route
 import com.example.duanxuong_comtam_kot104.R
-import com.example.duanxuong_comtam_kot104.model.LoaiSanphamViewModel
-import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamDB
-import com.example.duanxuong_comtam_kot104.repository.Repository
+import com.example.duanxuong_comtam_kot104.viewmodel.LoaiSanphamViewModel
+import com.example.duanxuong_comtam_kot104.data.category.LoaiSanphamDB
+import com.example.duanxuong_comtam_kot104.data.dish.DishDB
+import com.example.duanxuong_comtam_kot104.repository.CategoryRepository
+import com.example.duanxuong_comtam_kot104.repository.DishRepository
 import com.example.duanxuong_comtam_kot104.ui.screens.CategoryScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.DetailsCart
 import com.example.duanxuong_comtam_kot104.ui.screens.DishScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.HomeAdminScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.SuportScreen
+import com.example.duanxuong_comtam_kot104.viewmodel.DishViewModel
 
 @Composable
 fun BottomNavigation(navController: NavHostController){
@@ -72,9 +68,11 @@ fun MyBottomAppBar(navController: NavHostController) {
         mutableStateOf(Icons.Default.Home)
     }
     val dbCategory = LoaiSanphamDB.getIntance(context)
-    val repositoryCategory = Repository(dbCategory)
-    val categoryViewModel = LoaiSanphamViewModel(repositoryCategory)
-
+    val categoryRepositoryCategory = CategoryRepository(dbCategory)
+    val categoryViewModel = LoaiSanphamViewModel(categoryRepositoryCategory)
+    val dbDish = DishDB.getIntance(context)
+    val dishRepositoryCategory = DishRepository(dbDish)
+    val dishViewModel = DishViewModel(dishRepositoryCategory)
     Scaffold (
         bottomBar = {
             Column(Modifier.fillMaxWidth()) {
@@ -161,9 +159,8 @@ fun MyBottomAppBar(navController: NavHostController) {
             composable(Route.Home.screen) { HomeAdminScreen(navigationController) }
             composable(Route.DetailCart.screen) { DetailsCart(navigationController) }
             composable(Route.THONGKE.screen) { ThongKe(navigationController) }
-            composable(Route.Dish.screen) { DishScreen(navController, {navController.popBackStack()}) }
-            composable(Route.CategoryScreen.screen) { CategoryScreen(navController,categoryViewModel) }
-
+            composable(Route.Dish.screen) { DishScreen(navController, {navController.popBackStack()},dishViewModel,categoryViewModel) }
+            composable(Route.CategoryScreen.screen) { CategoryScreen(navController,categoryViewModel,{navController.popBackStack()}) }
             composable(Route.Manage.screen) { ManagerScreen(navigationController) }
             composable(Route.Support.screen) { SuportScreen(navigationController) }
         }

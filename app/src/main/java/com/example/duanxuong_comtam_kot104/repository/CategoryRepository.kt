@@ -1,10 +1,10 @@
 package com.example.duanxuong_comtam_kot104.repository
 
-import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamDB
-import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamEntity
+import com.example.duanxuong_comtam_kot104.data.category.LoaiSanphamDB
+import com.example.duanxuong_comtam_kot104.entities.category.LoaiSanphamEntity
 
 
-class Repository(val LoaiSpDB: LoaiSanphamDB) {
+class CategoryRepository(val LoaiSpDB: LoaiSanphamDB) {
     suspend fun addLoaiSanphamToRoom(LoaiSanphamEntity: LoaiSanphamEntity){
         LoaiSpDB.LoaiSanphamDAO().addLoaiSp(LoaiSanphamEntity)
     }

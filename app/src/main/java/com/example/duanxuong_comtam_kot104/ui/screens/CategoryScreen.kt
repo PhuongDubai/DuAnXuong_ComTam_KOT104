@@ -9,35 +9,31 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
-import com.example.duanxuong_comtam_kot104.model.LoaiSanphamViewModel
-import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamDB
-import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamEntity
-import com.example.duanxuong_comtam_kot104.repository.Repository
-import com.example.duanxuong_comtam_kot104.ui.components.MySpinner
+import com.example.duanxuong_comtam_kot104.viewmodel.LoaiSanphamViewModel
+import com.example.duanxuong_comtam_kot104.data.category.LoaiSanphamDB
+import com.example.duanxuong_comtam_kot104.entities.category.LoaiSanphamEntity
+import com.example.duanxuong_comtam_kot104.repository.CategoryRepository
 import com.example.duanxuong_comtam_kot104.ui.components.MyToolbar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryScreen(viewModel: LoaiSanphamViewModel,onBackClick: () -> Unit) {
+fun CategoryScreen(navController: NavController, viewModel: LoaiSanphamViewModel, onBackClick: () -> Unit) {
     var inputTenloai by remember { mutableStateOf("") }
     val empty by remember { mutableStateOf("") }
     val loaisp by viewModel.loaisanphams.collectAsState(initial = emptyList())
@@ -412,14 +408,4 @@ fun DeleteLoaiSanphamDialog(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun previewCategory() {
-    val context = LocalContext.current
-    val db = LoaiSanphamDB.getIntance(context)
-    val repository = Repository(db)
-    val myViewModel = LoaiSanphamViewModel(repository)
-    CategoryScreen(myViewModel, onBackClick = {})
 }

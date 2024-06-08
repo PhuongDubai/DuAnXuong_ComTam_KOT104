@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,7 +30,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MySpinner(
-    items: List<String>,
+    items: List<String?>,
     selectedItem: String,
     onItemSelected: (String) -> Unit
 ) {
@@ -36,16 +38,17 @@ fun MySpinner(
 
     Box(
         modifier = Modifier
-            .clickable { expanded = !expanded },
-        contentAlignment = Alignment.Center
+            .clickable { expanded = !expanded }
+            .fillMaxWidth()
+            .background(
+                color = Color.White,
+                shape = RoundedCornerShape(5.dp)
+            )
+            .padding(8.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(5.dp)
-                )
                 .height(25.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -61,11 +64,18 @@ fun MySpinner(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
         ) {
-            items.forEach { item ->
+            items.filterNotNull().forEach { item ->
                 DropdownMenuItem(
-                    text = { Text(item) },
+                    text = {
+                        Text(
+                            text = item,
+                            color = if (item == selectedItem) MaterialTheme.colorScheme.primary else Color.Unspecified
+                        )
+                    },
                     onClick = {
                         onItemSelected(item)
                         expanded = false

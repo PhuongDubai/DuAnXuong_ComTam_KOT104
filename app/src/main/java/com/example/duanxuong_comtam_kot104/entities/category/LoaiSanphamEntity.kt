@@ -1,4 +1,4 @@
-package com.example.duanxuong_comtam_kot104.model.entities
+package com.example.duanxuong_comtam_kot104.entities.category
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

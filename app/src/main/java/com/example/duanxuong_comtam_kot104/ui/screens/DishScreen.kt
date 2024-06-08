@@ -1,90 +1,59 @@
 package com.example.duanxuong_comtam_kot104.ui.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.duanxuong_comtam_kot104.R
+import com.example.duanxuong_comtam_kot104.entities.category.LoaiSanphamEntity
+import com.example.duanxuong_comtam_kot104.entities.dish.DishEntity
 import com.example.duanxuong_comtam_kot104.ui.components.MySpinner
 import com.example.duanxuong_comtam_kot104.ui.components.MyToolbar
-
-data class MonAn(
-    val id: Int,
-    val name: String,
-    val price: Int,
-    val imageResId: Int,
-)
-
-val MonAnList = listOf(
-    MonAn(
-        id = 1,
-        name = "Sườn bì",
-        price = 28,
-        imageResId = R.drawable.img_monan,
-    ),
-    MonAn(
-        id = 2,
-        name = "Bì chả",
-        price = 25,
-        imageResId = R.drawable.img_monan,
-    ),
-    MonAn(
-        id = 3,
-        name = "Trứng chả",
-        price = 25,
-        imageResId = R.drawable.img_monan,
-    ),
-    MonAn(
-        id = 4,
-        name = "Sườn chả",
-        price = 28,
-        imageResId = R.drawable.img_monan,
-    ),
-    MonAn(
-        id = 5,
-        name = "Sườn bì chả",
-        price = 35,
-        imageResId = R.drawable.img_monan,
-    ),
-    MonAn(
-        id = 6,
-        name = "Sườn cây",
-        price = 35,
-        imageResId = R.drawable.img_monan,
-    ),
-    MonAn(
-        id = 7,
-        name = "Sườn trứng",
-        price = 35,
-        imageResId = R.drawable.img_monan,
-    ),
-)
+import com.example.duanxuong_comtam_kot104.viewmodel.DishViewModel
+import com.example.duanxuong_comtam_kot104.viewmodel.LoaiSanphamViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DishScreen(navController: NavController,onBackClick: () -> Unit) {
+fun DishScreen(
+    navController: NavController,
+    onBackClick: () -> Unit,
+    dishViewModel: DishViewModel,
+    loaiSanphamViewModel: LoaiSanphamViewModel
+) {
+    var tenMonAn by remember { mutableStateOf("") }
+    var loaiMonAn by remember { mutableStateOf("") }
+    var gia by remember { mutableStateOf("0") }
+    var inputImageResId by remember { mutableStateOf<Int?>(null) }
+
+    val emty by remember { mutableStateOf("") }
+    val dishes by dishViewModel.dishes.collectAsState(initial = emptyList())
+    val loaiSanphams by loaiSanphamViewModel.loaisanphams.collectAsState(initial = emptyList())
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
-    var selectedMonAn by remember { mutableStateOf<MonAn?>(null) }
+    var selectedDish by remember { mutableStateOf<DishEntity?>(null) }
 
     Scaffold(
         topBar = {
@@ -92,7 +61,7 @@ fun DishScreen(navController: NavController,onBackClick: () -> Unit) {
                 title = "Danh sách món ăn",
                 onBackClick = onBackClick,
                 onAddClick = {
-                    showAddDialog=true;
+                    showAddDialog = true
                 }
             )
         },
@@ -105,22 +74,22 @@ fun DishScreen(navController: NavController,onBackClick: () -> Unit) {
                     .padding(10.dp)
             ) {
                 MonAnList(
-                    items = MonAnList,
+                    dishes = dishes,
                     onEditClick = { item ->
-                        selectedMonAn = item
+                        selectedDish = item
                         showEditDialog = true
                     },
                     onDeleteClick = { item ->
-                        selectedMonAn = item
+                        selectedDish = item
                         showDeleteDialog = true
                     }
                 )
             }
-            if (showDeleteDialog && selectedMonAn != null) {
+            if (showDeleteDialog && selectedDish != null) {
                 DeleteMonAnDialog(
-                    monAn = selectedMonAn!!,
+                    monAn = selectedDish!!,
                     onConfirmDelete = {
-                        // Xử lý sự kiện khi xóa món ăn
+                        dishViewModel.deleteDish(selectedDish!!)
                         showDeleteDialog = false
                     },
                     onDismissRequest = {
@@ -128,11 +97,12 @@ fun DishScreen(navController: NavController,onBackClick: () -> Unit) {
                     }
                 )
             }
-            if (showEditDialog && selectedMonAn != null) {
+            if (showEditDialog && selectedDish != null) {
                 EditMonAnDialog(
-                    monAn = selectedMonAn!!,
-                    onConfirmEdit = {
-                        // Xử lý sự kiện khi xóa món ăn
+                    monAn = selectedDish!!,
+                    categories = loaiSanphams,
+                    onConfirmEdit = { updatedDish ->
+                        dishViewModel.updateDish(updatedDish)
                         showEditDialog = false
                     },
                     onDismiss = {
@@ -142,10 +112,24 @@ fun DishScreen(navController: NavController,onBackClick: () -> Unit) {
             }
             if (showAddDialog) {
                 AddMonAnDialog(
+                    categories = loaiSanphams,
                     onDismiss = { showAddDialog = false },
-                    onConfirmAdd = {
-                        // Xử lý khi xác nhận thêm món ăn
+                    onConfirmAdd = { newDish ->
+                        dishViewModel.addDish(newDish)
                         showAddDialog = false
+                        dishViewModel.addDish(
+                            DishEntity(
+                                0,
+                                tenMonAn,
+                                loaiMonAn,
+                                gia.toIntOrNull() ?: 0,
+                                inputImageResId.toString()
+                            )
+                        )
+                        showAddDialog = false
+                        tenMonAn = emty
+                        loaiMonAn = emty
+                        gia = emty
                     }
                 )
             }
@@ -155,24 +139,25 @@ fun DishScreen(navController: NavController,onBackClick: () -> Unit) {
 
 @Composable
 fun MonAnList(
-    items: List<MonAn>,
-    onDeleteClick: (MonAn) -> Unit,
-    onEditClick: (MonAn) -> Unit
+    dishes: List<DishEntity>,
+    onDeleteClick: (DishEntity) -> Unit,
+    onEditClick: (DishEntity) -> Unit
 ) {
     LazyColumn {
-        items(items.size) { index ->
+        items(dishes) { dish ->
             MonAnItem(
-                item = items[index],
-                onDeleteClick = { onDeleteClick(items[index]) },
-                onEditClick = { onEditClick(items[index]) }
+                dish = dish,  // Corrected to singular form 'dish'
+                onDeleteClick = { onDeleteClick(dish) },
+                onEditClick = { onEditClick(dish) }
             )
         }
     }
 }
 
+
 @Composable
 fun MonAnItem(
-    item: MonAn,
+    dish: DishEntity,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit
 ) {
@@ -186,24 +171,26 @@ fun MonAnItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(10.dp))
-        Text("${item.id}", color = Color.White, fontSize = 20.sp)
+        Text("${dish.dish_id}", color = Color.White, fontSize = 20.sp)
         Spacer(modifier = Modifier.width(20.dp))
-        Image(
-            painter = painterResource(id = item.imageResId),
-            contentDescription = item.name,
-            modifier = Modifier
-                .size(60.dp)
-                .clip(RoundedCornerShape(20.dp))
-        )
+        dish.imageUri?.let {
+            Image(
+                painter = rememberAsyncImagePainter(model = it),
+                contentDescription = dish.tenMonAn,
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(20.dp))
+            )
+        }
         Spacer(modifier = Modifier.width(25.dp))
         Column(modifier = Modifier.width(120.dp)) {
-            Text(item.name, color = Color.White)
+            dish.tenMonAn?.let { Text(it, color = Color.White) }
             Spacer(modifier = Modifier.height(15.dp))
-            Text("${item.price}K", color = Color.Red)
+            Text("${dish.gia}K", color = Color.Red)
         }
         Image(
             painter = painterResource(id = R.drawable.img_edit),
-            contentDescription = "ImageEdit",
+            contentDescription = "Edit Image",
             modifier = Modifier
                 .size(28.dp)
                 .clickable { onEditClick() }
@@ -211,7 +198,7 @@ fun MonAnItem(
         Spacer(modifier = Modifier.width(25.dp))
         Image(
             painter = painterResource(id = R.drawable.img_delete),
-            contentDescription = "ImageDelete",
+            contentDescription = "Delete Image",
             modifier = Modifier
                 .size(28.dp)
                 .clickable { onDeleteClick() }
@@ -219,17 +206,32 @@ fun MonAnItem(
     }
 }
 
+
+
 //dialog thêm
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddMonAnDialog(onDismiss: () -> Unit,    onConfirmAdd: () -> Unit,) {
-    Dialog(
-        onDismissRequest = onDismiss
-    ) {
+fun AddMonAnDialog(
+    categories: List<LoaiSanphamEntity>,
+    onDismiss: () -> Unit,
+    onConfirmAdd: (DishEntity) -> Unit
+) {
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var tenMonAn by remember { mutableStateOf("") }
+    var loaiMonAn by remember { mutableStateOf(categories.firstOrNull()?.tenLoaiSp ?: "") }
+    var gia by remember { mutableStateOf("0") }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        selectedImageUri = uri
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier
                 .width(300.dp)
-                .height(500.dp),
+                .height(700.dp),
             shape = RoundedCornerShape(8.dp),
         ) {
             Column(
@@ -240,32 +242,39 @@ fun AddMonAnDialog(onDismiss: () -> Unit,    onConfirmAdd: () -> Unit,) {
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val items_loaimon = listOf("Món chính", "Món phụ", "Đồ uống")
-                var selectedItem_loaimon by remember { mutableStateOf(items_loaimon.first()) }
-                var items_gia = listOf("5k-100k", "100k-500k", "Trên 500k")
-                var selectedItem_gia by remember { mutableStateOf(items_gia.first()) }
-
                 Image(
-                    painter = painterResource(id = R.drawable.img_addmonan),
-                    contentDescription = "AddImage",
-                    modifier = Modifier.size(150.dp)
+                    painter = if (selectedImageUri != null) {
+                        rememberAsyncImagePainter(model = selectedImageUri)
+                    } else {
+                        painterResource(id = R.drawable.img_addmonan)
+                    },
+                    contentDescription = "Add Image",
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clickable {
+                            launcher.launch("image/*")
+                        }
                 )
                 Spacer(modifier = Modifier.height(30.dp))
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = "Loại món", color = Color.White, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(10.dp))
                 MySpinner(
-                    items = items_loaimon,
-                    selectedItem = selectedItem_loaimon,
-                    onItemSelected = { selectedItem_loaimon = it }
+                    items = categories.map { it.tenLoaiSp },
+                    selectedItem = loaiMonAn,
+                    onItemSelected = { loaiMonAn = it }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = "Giá", color = Color.White, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(10.dp))
-                MySpinner(
-                    items = items_gia,
-                    selectedItem = selectedItem_gia,
-                    onItemSelected = { selectedItem_gia = it }
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(110.dp)
+                        .background(Color.White, shape = RoundedCornerShape(5.dp)),
+                    value = gia,
+                    onValueChange = { gia = it },
+                    textStyle = TextStyle(color = Color.Black)
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
@@ -274,16 +283,13 @@ fun AddMonAnDialog(onDismiss: () -> Unit,    onConfirmAdd: () -> Unit,) {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                var tenMonAn by remember { mutableStateOf("") }
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(25.dp)
-                        .background(Color.White, shape = RoundedCornerShape(5.dp)),
                     value = tenMonAn,
                     onValueChange = { tenMonAn = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White, shape = RoundedCornerShape(5.dp))
                 )
-
                 Spacer(modifier = Modifier.height(30.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -295,23 +301,32 @@ fun AddMonAnDialog(onDismiss: () -> Unit,    onConfirmAdd: () -> Unit,) {
                             .width(110.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color("#E0AB3C".toColorInt()),
-                            contentColor = Color.White
+                            containerColor = Color("#E0AB3C".toColorInt())
                         )
                     ) {
-                        Text(text = "Hủy", fontSize = 14.sp)
+                        Text(text = "Hủy")
                     }
+
                     Button(
-                        onClick = {onConfirmAdd()},
+                        onClick = {
+                            onConfirmAdd(
+                                DishEntity(
+                                    dish_id = 0,
+                                    tenMonAn = tenMonAn,
+                                    loaiMonAn = loaiMonAn,
+                                    gia = gia.toIntOrNull() ?: 0,
+                                    imageUri = selectedImageUri?.toString() // Convert URI to string
+                                )
+                            )
+                        },
                         modifier = Modifier
                             .width(110.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color("#E0AB3C".toColorInt()),
-                            contentColor = Color.White
+                            containerColor = Color("#E0AB3C".toColorInt())
                         )
                     ) {
-                        Text(text = "Xác nhận", fontSize = 14.sp)
+                        Text(text = "Thêm")
                     }
                 }
             }
@@ -319,17 +334,31 @@ fun AddMonAnDialog(onDismiss: () -> Unit,    onConfirmAdd: () -> Unit,) {
     }
 }
 
+
+
+
 //dialog sửa
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditMonAnDialog(
-    monAn: MonAn,
-    onConfirmEdit: () -> Unit,
+    monAn: DishEntity,
+    categories: List<LoaiSanphamEntity>,
     onDismiss: () -> Unit,
+    onConfirmEdit: (DishEntity) -> Unit
 ) {
-    Dialog(
-        onDismissRequest = onDismiss
-    ) {
+    var tenMonAn by remember { mutableStateOf(monAn.tenMonAn ?: "") }
+    var selectedCategory by remember { mutableStateOf(monAn.loaiMonAn ?: categories.firstOrNull()?.tenLoaiSp ?: "") }
+    var gia by remember { mutableStateOf(monAn.gia.toString()) }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var initialImageUri = monAn.imageUri
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        selectedImageUri = uri
+    }
+
+    Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier
                 .width(300.dp)
@@ -339,55 +368,54 @@ fun EditMonAnDialog(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .height(800.dp)
                     .background(color = Color("#221F1F".toColorInt()))
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                var items_gia = listOf("5k-100k", "100k-500k", "Trên 500k")
-                var selectedItem_gia by remember { mutableStateOf(items_gia.first()) }
-
                 Image(
-                    painter = painterResource(id = R.drawable.img_monan_edit),
-                    contentDescription = "AddImage",
+                    painter = if (selectedImageUri != null) {
+                        rememberAsyncImagePainter(model = selectedImageUri)
+                    } else {
+                        rememberAsyncImagePainter(model = initialImageUri) // Load existing image
+                    },
+                    contentDescription = "Edit Image",
                     modifier = Modifier
                         .size(150.dp)
-//                        .shadow(
-//                            elevation = 25.dp,
-//                            shape = RoundedCornerShape(20.dp),
-//                            ambientColor = Color.White.copy(alpha = 0.1f),
-//                            spotColor = Color.White.copy(alpha = 0.1f)
-//                        )
-                        .clip(RoundedCornerShape(20.dp))
-                )
-                Spacer(modifier = Modifier.height(30.dp))
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = "Tên món ăn",
-                    color = Color.White,
-                    modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            launcher.launch("image/*")
+                        }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                var tenMonAn by remember { mutableStateOf("") }
+                Text(text = "Tên món ăn", color = Color.White, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(10.dp))
                 OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(25.dp)
-                        .background(Color.White, shape = RoundedCornerShape(5.dp)),
                     value = tenMonAn,
                     onValueChange = { tenMonAn = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White, shape = RoundedCornerShape(5.dp))
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = "Loại món", color = Color.White, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(10.dp))
+                MySpinner(
+                    items = categories.map { it.tenLoaiSp },
+                    selectedItem = selectedCategory,
+                    onItemSelected = { selectedCategory = it }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(text = "Giá", color = Color.White, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(10.dp))
-                MySpinner(
-                    items = items_gia,
-                    selectedItem = selectedItem_gia,
-                    onItemSelected = { selectedItem_gia = it }
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .background(Color.White, shape = RoundedCornerShape(5.dp)),
+                    value = gia,
+                    onValueChange = { gia = it },
+                    textStyle = TextStyle(color = Color.Black)
                 )
-
-
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -398,23 +426,32 @@ fun EditMonAnDialog(
                             .width(110.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color("#E0AB3C".toColorInt()),
-                            contentColor = Color.White
+                            containerColor = Color("#E0AB3C".toColorInt())
                         )
                     ) {
-                        Text(text = "Hủy", fontSize = 14.sp)
+                        Text(text = "Hủy")
                     }
+
                     Button(
-                        onClick = {onConfirmEdit()},
+                        onClick = {
+                            onConfirmEdit(
+                                DishEntity(
+                                    dish_id = monAn.dish_id,
+                                    tenMonAn = tenMonAn,
+                                    loaiMonAn = selectedCategory,
+                                    gia = gia.toIntOrNull() ?: 0,
+                                    imageUri = selectedImageUri?.toString() ?: initialImageUri // Use new or old image URI
+                                )
+                            )
+                        },
                         modifier = Modifier
                             .width(110.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color("#E0AB3C".toColorInt()),
-                            contentColor = Color.White
+                            containerColor = Color("#E0AB3C".toColorInt())
                         )
                     ) {
-                        Text(text = "Xác nhận", fontSize = 14.sp)
+                        Text(text = "Lưu")
                     }
                 }
             }
@@ -422,75 +459,34 @@ fun EditMonAnDialog(
     }
 }
 
+
+
+
 //dialog xóa
 @Composable
 fun DeleteMonAnDialog(
-    monAn: MonAn,
+    monAn: DishEntity,
     onConfirmDelete: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-            color = Color.White
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color("#EBE9E9".toColorInt()))
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = { Text(text = "Xác nhận xóa món ăn") },
+        text = { Text(text = "Bạn có chắc chắn muốn xóa món ăn này?") },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirmDelete
             ) {
-                Text(
-                    text = "Thông Báo",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Bạn có chắc chắn muốn xóa món ăn ${monAn.name} này không ?",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Button(
-                        onClick = onDismissRequest,
-                        modifier = Modifier
-                            .width(110.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color("#E0AB3C".toColorInt()),
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Hủy", fontSize = 14.sp)
-                    }
-                    Button(
-                        onClick = onConfirmDelete,
-                        modifier = Modifier
-                            .width(110.dp),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color("#E0AB3C".toColorInt()),
-                            contentColor = Color.White
-                        )
-                    ) {
-                        Text(text = "Xác nhận", fontSize = 14.sp)
-                    }
-                }
+                Text("Xóa")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismissRequest
+            ) {
+                Text("Hủy")
             }
         }
-    }
+    )
 }
+

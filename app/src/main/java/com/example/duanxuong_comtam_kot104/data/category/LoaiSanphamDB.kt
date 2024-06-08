@@ -1,9 +1,10 @@
-package com.example.duanxuong_comtam_kot104.model.entities
+package com.example.duanxuong_comtam_kot104.data.category
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.duanxuong_comtam_kot104.entities.category.LoaiSanphamEntity
 
 @Database(entities = [LoaiSanphamEntity::class], version = 2, exportSchema = false)
 abstract class LoaiSanphamDB : RoomDatabase() {
