@@ -94,7 +94,6 @@ fun AddCategoriesScreen(navController: NavController) {
                         .background(color = Color(0xFF252121)),
                 ) {
                     Column(
-
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

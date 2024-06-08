@@ -1,40 +1,15 @@
 package com.example.duanxuong_comtam_kot104.ui.screens
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,14 +19,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.core.graphics.toColorInt
 import com.example.duanxuong_comtam_kot104.R
 import com.example.duanxuong_comtam_kot104.model.LoaiSanphamViewModel
 import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamDB
 import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamEntity
 import com.example.duanxuong_comtam_kot104.repository.Repository
-
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +36,6 @@ fun CategoryScreen(viewModel: LoaiSanphamViewModel) {
     val loaisp by viewModel.loaisanphams.collectAsState(initial = emptyList())
 
     Scaffold(
-
         topBar = {
             TopAppBar(
                 title = {
@@ -80,128 +52,151 @@ fun CategoryScreen(viewModel: LoaiSanphamViewModel) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF252121),  // Correctly use Color with hex value
+                    containerColor = Color(0xFF252121),
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
                     actionIconContentColor = MaterialTheme.colorScheme.onSecondary
                 )
             )
         },
-    ) {
-
-        if (loaisp.isEmpty()) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+        content = { paddingValues: PaddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(color = Color.Black),
+            ) {
+                Box(
                     modifier = Modifier
-                        .padding(it)
+                        .padding(top = 5.dp)
                         .fillMaxSize()
-                        .background(Color(0xFF282222))
+                        .background(color = Color(0xFF252121)),
                 ) {
-                    Text(text = "No name available")
-                }
-        } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(it)
-                        .fillMaxSize()
-                        .background(Color(0xFF282222)),
-                    contentPadding = PaddingValues(10.dp)
-                ) {
-                    items(loaisp) {
-                        Card(
+                    if (loaisp.isEmpty()) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .background(color = Color.Red)
-                                .padding(5.dp),
-
-                            elevation = CardDefaults.cardElevation(4.dp)
+                                .padding(paddingValues)
+                                .fillMaxSize()
+                                .background(Color(0xFF282222))
                         ) {
-                            Column(
-                                modifier = Modifier.padding(14.dp)
-                                    .background(color = Color.Red)
-                            ) {
-                                Text(
-                                    text = "ID: " + it.uid,
-                                    fontSize = 16.sp,
-                                    modifier = Modifier.padding(5.dp),
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    text = "Họ tên: " + it.tenLoaiSp,
-                                    fontSize = 16.sp,
-                                    modifier = Modifier.padding(5.dp),
-                                )
-
+                            Text(text = "No name available")
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color(0xFF282222)),
+                            contentPadding = PaddingValues(10.dp)
+                        ) {
+                            items(loaisp) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { }
+                                        .padding(10.dp)
+                                        .height(82.dp)
+                                        .background(
+                                            Color("#2B2929".toColorInt()),
+                                            shape = RoundedCornerShape(10.dp)
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text("${it.uid}", color = Color.White, fontSize = 20.sp)
+                                    Spacer(modifier = Modifier.width(20.dp))
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            "${it.tenLoaiSp}",
+                                            color = Color.White,
+                                            fontSize = 20.sp
+                                        )
+                                    }
+                                    Image(
+                                        painter = painterResource(id = R.drawable.img_edit),
+                                        contentDescription = "ImageEdit",
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clickable { }
+                                    )
+                                    Spacer(modifier = Modifier.width(25.dp))
+                                    Image(
+                                        painter = painterResource(id = R.drawable.img_delete),
+                                        contentDescription = "ImageDelete",
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .clickable { }
+                                    )
+                                    Spacer(modifier = Modifier.width(25.dp))
+                                }
                             }
                         }
-
-                }
-
-        }
-    }
-        }
-    if (showDialog.value) {
-        AlertDialog(
-            onDismissRequest = { showDialog.value = false },
-            dismissButton = {
-                Button(
-                    onClick = {
-                        showDialog.value = false
-                        inputTenloai = emty
-
-
                     }
-                ) {
-                    Text(text = "Cancel")
-                }
-            },
-            confirmButton = {
-                if (inputTenloai.isNotEmpty() ) {
 
-                    Button(
-                        onClick = {
-                            viewModel.addLoaiSanpham(
-                                LoaiSanphamEntity(
-                                    0,
-                                    inputTenloai,
+                    if (showDialog.value) {
+                        AlertDialog(
+                            onDismissRequest = { showDialog.value = false },
+                            dismissButton = {
+                                Button(
+                                    onClick = {
+                                        showDialog.value = false
+                                        inputTenloai = emty
+                                    }
+                                ) {
+                                    Text(text = "Cancel")
+                                }
+                            },
+                            confirmButton = {
+                                if (inputTenloai.isNotEmpty()) {
+                                    Button(
+                                        onClick = {
+                                            viewModel.addLoaiSanpham(
+                                                LoaiSanphamEntity(
+                                                    0,
+                                                    inputTenloai,
+                                                )
+                                            )
+                                            showDialog.value = false
+                                            inputTenloai = emty
+                                        }
+                                    ) {
+                                        Text(text = "Save")
+                                    }
+                                }
+                            },
+                            title = {
+                                Text(
+                                    text = "Add Student",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 25.sp,
+                                    modifier = Modifier.padding(5.dp)
                                 )
-                            )
-                            showDialog.value = false
-                            inputTenloai = emty
-                        }
-                    ) {
-                        Text(text = "Save")
+                            },
+                            text = {
+                                Column {
+                                    OutlinedTextField(
+                                        value = inputTenloai,
+                                        onValueChange = { inputTenloai = it },
+                                        label = {
+                                            Text(text = "Họ Tên")
+                                        },
+                                        placeholder = { Text(text = "Nhập Họ Tên") }
+                                    )
+                                }
+                            }
+                        )
                     }
-                }
-            },
-            title = {
-                Text(
-                    text = "Add Student",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 25.sp,
-                    modifier = Modifier.padding(5.dp)
-                )
-            },
-            text = {
-                Column {
-                    OutlinedTextField(
-                        value = inputTenloai,
-                        onValueChange = {inputTenloai = it},
-                        label = {
-                            Text(text = "Họ Tên")
-                        },
-                        placeholder = { Text(text = "Nhập Họ Tên")}
-                    )
-
                 }
             }
-        )
-    }
+        }
+    )
 }
-@Preview (showBackground = true)
+
+@Preview(showBackground = true)
 @Composable
-fun previewCategory(){
+fun previewCategory() {
     val context = LocalContext.current
     val db = LoaiSanphamDB.getIntance(context)
     val repository = Repository(db)
