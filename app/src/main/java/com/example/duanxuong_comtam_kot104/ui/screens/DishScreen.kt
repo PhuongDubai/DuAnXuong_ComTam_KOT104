@@ -87,36 +87,43 @@ fun ListMonAnScreen(onBackClick: () -> Unit) {
                 onBackClick = onBackClick
             )
         },
-        content = { innerPadding ->
+        content = { paddingValues: PaddingValues ->
             Box(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .fillMaxSize()
-                    .background(color = Color("#221F1F".toColorInt()))
-                    .padding(10.dp)
+                    .padding(paddingValues)
+                    .background(color = Color.Black),
             ) {
-                MonAnList(
-                    items = MonAnList,
-                    onEditClick = { item ->
-                        // Handle edit click event here
-                    },
-                    onDeleteClick = { item ->
-                        selectedMonAn = item
-                        showDeleteDialog = true
-                    }
-                )
-            }
-            if (showDeleteDialog && selectedMonAn != null) {
-                DeleteMonAnDialog(
-                    monAn = selectedMonAn!!,
-                    onConfirmDelete = {
-                        // Xử lý sự kiện khi xóa món ăn
-                        showDeleteDialog = false
-                    },
-                    onDismissRequest = {
-                        showDeleteDialog = false
-                    }
-                )
+
+                Box(
+                    modifier = Modifier
+                        .padding(top = 5.dp)
+                        .fillMaxSize()
+                        .background(color = Color(0xFF252121)),
+                ) {
+                    MonAnList(
+                        items = MonAnList,
+                        onEditClick = { item ->
+                            // Handle edit click event here
+                        },
+                        onDeleteClick = { item ->
+                            selectedMonAn = item
+                            showDeleteDialog = true
+                        }
+                    )
+                }
+                if (showDeleteDialog && selectedMonAn != null) {
+                    DeleteMonAnDialog(
+                        monAn = selectedMonAn!!,
+                        onConfirmDelete = {
+                            // Xử lý sự kiện khi xóa món ăn
+                            showDeleteDialog = false
+                        },
+                        onDismissRequest = {
+                            showDeleteDialog = false
+                        }
+                    )
+                }
             }
         }
     )
@@ -152,7 +159,9 @@ fun MonAnItem(
             .padding(10.dp)
             .height(82.dp)
             .background(Color("#2B2929".toColorInt()), shape = RoundedCornerShape(10.dp)),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+
+        
     ) {
         Spacer(modifier = Modifier.width(10.dp))
         Text("${item.id}", color = Color.White, fontSize = 20.sp)
