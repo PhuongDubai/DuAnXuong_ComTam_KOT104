@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,6 +53,14 @@ fun CategoryScreen(viewModel: LoaiSanphamViewModel) {
                         Text(text = "Cum tứm đim")
                     }
                 },
+                actions = {
+                    IconButton(onClick = { /* Handle add icon click */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add"
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF252121),
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -59,6 +69,7 @@ fun CategoryScreen(viewModel: LoaiSanphamViewModel) {
                 )
             )
         },
+
         content = { paddingValues: PaddingValues ->
             Box(
                 modifier = Modifier
