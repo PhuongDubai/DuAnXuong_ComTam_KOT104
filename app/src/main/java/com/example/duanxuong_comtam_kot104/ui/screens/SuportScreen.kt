@@ -36,38 +36,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun SuportScreen() {
+fun SuportScreen(navController: NavController) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = R.drawable.anhlogo),
-                            contentDescription = "Logo",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(end = 8.dp)
-                                .fillMaxSize(0.5f)
-                        )
-                        Text(text = "Cum tứm đim")
-                    }
-                },
-
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF252121),  // Correctly use Color with hex value
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSecondary
-                )
-            )
-        },
         content = { paddingValues: PaddingValues ->
             Box(
                 modifier = Modifier
