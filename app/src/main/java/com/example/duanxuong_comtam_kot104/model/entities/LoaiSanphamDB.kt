@@ -33,3 +33,5 @@ abstract class LoaiSanphamDB : RoomDatabase() {
     }
 
 }
+
+

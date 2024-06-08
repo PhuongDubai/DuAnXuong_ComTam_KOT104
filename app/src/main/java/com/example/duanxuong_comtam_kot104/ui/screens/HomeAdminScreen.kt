@@ -1,5 +1,7 @@
 package com.example.duanxuong_comtam_kot104.ui.screens
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,59 +13,92 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.comtam_kotlin_room.utils.Route
+import com.example.duanxuong_comtam_kot104.R
 
 data class ListItem(val title: String, val description: String, val price: String)
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeAdminScreen(navigationController: NavHostController) {
-    val itemsList = listOf(
-        ListItem("Đơn hàng CT2E22E", "Từ chối", "100.000 đ"),
-        ListItem("Đơn hàng CT2E2206", "Chấp nhận", "500.000 đ"),
-        ListItem("Đơn hàng CT2E23E", "Từ chối", "100.800 đ"),
-        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
-        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
-        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
-        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
-        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
-        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
-        ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+    Scaffold(
+        topBar = {
+            Column(Modifier.fillMaxWidth()) {
+                TopAppBar(
+                    title = {
+                        Row (modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(id = R.drawable.logo),
+                                contentDescription ="",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxWidth(0.12f)
+                            )
+                            Text(text = "Cum tứm đim")
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xff252121),
+                        titleContentColor = Color.White,
+                    ),
 
-        )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xff252121)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+                    )
+                Divider(thickness = 2.dp, color = Color.Black)
+            }
+
+        },
     ) {
-        Text(
-            text = "Today:23-09-2024 ",
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-        Text(
-            text = "Số lượng đơn: 1",
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White,
-        )
-        Text(
-            text = "Doanh thu: 500.000 đ",
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White,
-        )
-        LazyColumn(
+        val itemsList = listOf(
+            ListItem("Đơn hàng CT2E22E", "Từ chối", "100.000 đ"),
+            ListItem("Đơn hàng CT2E2206", "Chấp nhận", "500.000 đ"),
+            ListItem("Đơn hàng CT2E23E", "Từ chối", "100.800 đ"),
+            ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+            ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+            ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+            ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+            ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+            ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+            ListItem("Đơn hàng CT2E12E", "Từ chối", "101.854 đ"),
+
+            )
+        Column(
             modifier = Modifier
-                .padding(top = 7.dp, start = 16.dp, end = 16.dp)
                 .fillMaxSize()
-                .background(Color(0xff252121))
-        )
-        {
-            items(itemsList) { item ->
-                ListItemView(item = item, navigationController = navigationController)
+                .background(Color(0xff252121)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Today:23-09-2024 ",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                text = "Số lượng đơn: 1",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White,
+            )
+            Text(
+                text = "Doanh thu: 500.000 đ",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White,
+            )
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = 7.dp, start = 16.dp, end = 16.dp)
+                    .fillMaxSize()
+                    .background(Color(0xff252121))
+            )
+            {
+                items(itemsList) { item ->
+                    ListItemView(item = item, navigationController = navigationController)
+                }
             }
         }
     }
@@ -75,7 +110,7 @@ fun ListItemView(item: ListItem, navigationController: NavHostController) {
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .padding(top = 10.dp)
-            .clickable{navigationController.navigate(Route.DetailCart.screen)}
+            .clickable { navigationController.navigate(Route.DetailCart.screen) }
             .height(110.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),

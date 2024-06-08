@@ -37,7 +37,7 @@ fun ManagerScreen(navController: NavController) {
                         Row(
                             modifier = Modifier
                                 .padding(top=50.dp, start = 20.dp)
-                                .clickable { navController.navigate(Route.AddCategory.screen) },
+                                .clickable { navController.navigate(Route.CategoryScreen.screen) },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
