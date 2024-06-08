@@ -20,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.duanxuong_comtam_kot104.R
 import com.example.duanxuong_comtam_kot104.model.LoaiSanphamViewModel
 import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamDB
@@ -29,7 +31,7 @@ import com.example.duanxuong_comtam_kot104.repository.Repository
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryScreen(viewModel: LoaiSanphamViewModel) {
+fun CategoryScreen(navController: NavController,viewModel: LoaiSanphamViewModel) {
     var inputTenloai by remember { mutableStateOf("") }
     val emty by remember { mutableStateOf("") }
     val showDialog = remember { mutableStateOf(false) }
@@ -192,14 +194,4 @@ fun CategoryScreen(viewModel: LoaiSanphamViewModel) {
             }
         }
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun previewCategory() {
-    val context = LocalContext.current
-    val db = LoaiSanphamDB.getIntance(context)
-    val repository = Repository(db)
-    val myViewModel = LoaiSanphamViewModel(repository)
-    CategoryScreen(myViewModel)
 }

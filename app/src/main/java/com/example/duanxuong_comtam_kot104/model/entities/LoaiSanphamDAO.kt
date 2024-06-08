@@ -21,3 +21,4 @@ interface LoaiSanphamDAO {
     @Update
     suspend fun updateLoaiSp(LoaiSanphamEntity: LoaiSanphamEntity)
 }
+

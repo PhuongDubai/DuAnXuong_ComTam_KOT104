@@ -2,11 +2,15 @@ package com.example.duanxuong_comtam_kot104.navigation
 
 import ManagerScreen
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.comtam_kotlin_room.utils.Route
-import com.example.duanxuong_comtam_kot104.ui.screens.AddCategoriesScreen
+import com.example.duanxuong_comtam_kot104.model.LoaiSanphamViewModel
+import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamDB
+import com.example.duanxuong_comtam_kot104.repository.Repository
+import com.example.duanxuong_comtam_kot104.ui.screens.CategoryScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.DetailsCart
 import com.example.duanxuong_comtam_kot104.ui.screens.DishScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.LoginScreen
@@ -17,7 +21,11 @@ import com.example.duanxuong_comtam_kot104.ui.screens.SuportScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "Home") {
+    val context = LocalContext.current
+    val dbCategory = LoaiSanphamDB.getIntance(context)
+    val repositoryCategory = Repository(dbCategory)
+    val categoryViewModel = LoaiSanphamViewModel(repositoryCategory)
+    NavHost(navController = navController, startDestination = "Splash") {
         composable(route = "Splash") {
             SplashScreen(navController)
         }
@@ -36,7 +44,7 @@ fun AppNavigation(navController: NavHostController) {
         composable(route = "Support") {
             SuportScreen(navController)
         }
-        composable(Route.AddCategory.screen) { AddCategoriesScreen(navController) }
+        composable(Route.CategoryScreen.screen) { CategoryScreen(navController, categoryViewModel) }
         composable(Route.Dish.screen) { DishScreen(navController, {navController.popBackStack()}) }
         composable(route = "ManagerCategory") {
             ManagerCategoriesScreen(navController)

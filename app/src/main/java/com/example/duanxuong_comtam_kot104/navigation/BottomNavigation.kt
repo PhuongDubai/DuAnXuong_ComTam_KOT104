@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -42,6 +43,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.comtam_kotlin_room.ui.screen.thongke.ThongKe
 import com.example.comtam_kotlin_room.utils.Route
 import com.example.duanxuong_comtam_kot104.R
+import com.example.duanxuong_comtam_kot104.model.LoaiSanphamViewModel
+import com.example.duanxuong_comtam_kot104.model.entities.LoaiSanphamDB
+import com.example.duanxuong_comtam_kot104.repository.Repository
+import com.example.duanxuong_comtam_kot104.ui.screens.CategoryScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.DetailsCart
 import com.example.duanxuong_comtam_kot104.ui.screens.DishScreen
 import com.example.duanxuong_comtam_kot104.ui.screens.HomeAdminScreen
@@ -62,35 +67,15 @@ fun BottomNavigation(navController: NavHostController){
 @Composable
 fun MyBottomAppBar(navController: NavHostController) {
     val navigationController = rememberNavController()
+    val context = LocalContext.current
     val selected = remember {
         mutableStateOf(Icons.Default.Home)
     }
+    val dbCategory = LoaiSanphamDB.getIntance(context)
+    val repositoryCategory = Repository(dbCategory)
+    val categoryViewModel = LoaiSanphamViewModel(repositoryCategory)
+
     Scaffold (
-        topBar = {
-            Column(Modifier.fillMaxWidth()) {
-                TopAppBar(
-                    title = {
-                        Row (modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(id = R.drawable.logo),
-                                contentDescription ="",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier.fillMaxWidth(0.12f)
-                            )
-                            Text(text = "Cum tứm đim")
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xff252121),
-                        titleContentColor = Color.White,
-                    ),
-
-                    )
-                Divider(thickness = 2.dp, color = Color.Black)
-            }
-
-        },
         bottomBar = {
             Column(Modifier.fillMaxWidth()) {
                 Divider(thickness = 2.dp, color = Color.Black)
@@ -177,6 +162,8 @@ fun MyBottomAppBar(navController: NavHostController) {
             composable(Route.DetailCart.screen) { DetailsCart(navigationController) }
             composable(Route.THONGKE.screen) { ThongKe(navigationController) }
             composable(Route.Dish.screen) { DishScreen(navController, {navController.popBackStack()}) }
+            composable(Route.CategoryScreen.screen) { CategoryScreen(navController,categoryViewModel) }
+
             composable(Route.Manage.screen) { ManagerScreen(navigationController) }
             composable(Route.Support.screen) { SuportScreen(navigationController) }
         }
