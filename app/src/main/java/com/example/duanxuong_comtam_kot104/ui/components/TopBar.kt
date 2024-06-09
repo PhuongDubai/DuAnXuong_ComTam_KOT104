@@ -22,13 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
+import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyToolbar(
     title: String,
-    onBackClick: () -> Unit,
+    navController: NavController,
     onAddClick: () -> Unit
 ) {
     TopAppBar(
@@ -44,7 +45,7 @@ fun MyToolbar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
+            IconButton(onClick = {navController.popBackStack()}) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back"

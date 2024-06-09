@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,9 +25,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
 import com.example.duanxuong_comtam_kot104.ui.theme.interFontFamily
+import com.example.duanxuong_comtam_kot104.viewmodel.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +37,6 @@ fun LoginScreen(navController: NavController) {
     val context = LocalContext.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -122,17 +124,11 @@ fun LoginScreen(navController: NavController) {
 
                 Button(
                     onClick = {
-                        if (username.isNotBlank() || password.isNotBlank()) {
-                            Toast.makeText(
-                                context, "Login successful", Toast.LENGTH_LONG
-                            ).show()
-                            navController.navigate("Home"){
-                                popUpTo("Login"){inclusive = true}
-                            }
+                        if (username.isNotBlank() && password.isNotBlank()) {
+                            navController.navigate("Home")
                         } else {
-                            Toast.makeText(
-                                context, "Please enter username and password", Toast.LENGTH_LONG
-                            ).show()
+                            // Hiển thị thông báo lỗi khi thông tin đăng nhập trống
+                            Toast.makeText(context, "Vui lòng nhập tên đăng nhập và mật khẩu", Toast.LENGTH_SHORT).show()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(

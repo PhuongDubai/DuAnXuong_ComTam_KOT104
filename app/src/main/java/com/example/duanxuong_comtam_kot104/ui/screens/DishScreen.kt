@@ -38,7 +38,6 @@ import com.example.duanxuong_comtam_kot104.viewmodel.LoaiSanphamViewModel
 @Composable
 fun DishScreen(
     navController: NavController,
-    onBackClick: () -> Unit,
     dishViewModel: DishViewModel,
     loaiSanphamViewModel: LoaiSanphamViewModel
 ) {
@@ -59,7 +58,7 @@ fun DishScreen(
         topBar = {
             MyToolbar(
                 title = "Danh sách món ăn",
-                onBackClick = onBackClick,
+                navController = navController,
                 onAddClick = {
                     showAddDialog = true
                 }
@@ -117,25 +116,13 @@ fun DishScreen(
                     onConfirmAdd = { newDish ->
                         dishViewModel.addDish(newDish)
                         showAddDialog = false
-                        dishViewModel.addDish(
-                            DishEntity(
-                                0,
-                                tenMonAn,
-                                loaiMonAn,
-                                gia.toIntOrNull() ?: 0,
-                                inputImageResId.toString()
-                            )
-                        )
-                        showAddDialog = false
-                        tenMonAn = emty
-                        loaiMonAn = emty
-                        gia = emty
                     }
                 )
             }
         }
     )
 }
+
 
 @Composable
 fun MonAnList(
@@ -270,7 +257,6 @@ fun AddMonAnDialog(
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(110.dp)
                         .background(Color.White, shape = RoundedCornerShape(5.dp)),
                     value = gia,
                     onValueChange = { gia = it },

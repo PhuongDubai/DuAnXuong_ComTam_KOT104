@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.duanxuong_comtam_kot104.entities.category.LoaiSanphamEntity
 
 @Database(entities = [LoaiSanphamEntity::class], version = 2, exportSchema = false)
-abstract class LoaiSanphamDB : RoomDatabase() {
+abstract class  LoaiSanphamDB : RoomDatabase() {
 
     abstract fun LoaiSanphamDAO(): LoaiSanphamDAO
 

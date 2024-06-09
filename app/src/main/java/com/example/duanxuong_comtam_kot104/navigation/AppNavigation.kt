@@ -31,12 +31,12 @@ fun AppNavigation(navController: NavHostController) {
     val dbDish = DishDB.getIntance(context)
     val dishRepositoryCategory = DishRepository(dbDish)
     val dishViewModel = DishViewModel(dishRepositoryCategory)
-    NavHost(navController = navController, startDestination = "Home") {
+    NavHost(navController = navController, startDestination = "Splash") {
         composable(route = "Splash") {
             SplashScreen(navController)
         }
         composable(route = "Login") {
-            LoginScreen(navController)
+            LoginScreen(navController,)
         }
         composable(route = "SignUp") {
             RegisterScreen(navController)
@@ -50,8 +50,12 @@ fun AppNavigation(navController: NavHostController) {
         composable(route = "Support") {
             SuportScreen(navController)
         }
-        composable(Route.CategoryScreen.screen) { CategoryScreen(navController, categoryViewModel, {navController.popBackStack()}) }
-        composable(Route.Dish.screen) { DishScreen(navController, {navController.popBackStack()},dishViewModel,categoryViewModel) }
+        composable(Route.CategoryScreen.screen) {
+            CategoryScreen(navController, categoryViewModel)
+        }
+        composable(Route.Dish.screen) {
+            DishScreen(navController, dishViewModel, categoryViewModel)
+        }
         composable(route = "ManagerCategory") {
             ManagerCategoriesScreen(navController)
         }
@@ -60,3 +64,4 @@ fun AppNavigation(navController: NavHostController) {
         }
     }
 }
+
