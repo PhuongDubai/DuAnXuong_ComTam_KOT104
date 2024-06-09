@@ -33,7 +33,7 @@ import com.example.duanxuong_comtam_kot104.ui.components.MyToolbar
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryScreen(navController: NavController, viewModel: LoaiSanphamViewModel, onBackClick: () -> Unit) {
+fun CategoryScreen(navController: NavController, viewModel: LoaiSanphamViewModel) {
     var inputTenloai by remember { mutableStateOf("") }
     val empty by remember { mutableStateOf("") }
     val loaisp by viewModel.loaisanphams.collectAsState(initial = emptyList())
@@ -46,7 +46,7 @@ fun CategoryScreen(navController: NavController, viewModel: LoaiSanphamViewModel
         topBar = {
             MyToolbar(
                 title = "Danh sách loại ",
-                onBackClick = onBackClick,
+                navController = navController,
                 onAddClick = {
                     showAddDialog=true;
                 }

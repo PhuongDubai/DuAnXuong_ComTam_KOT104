@@ -50,8 +50,12 @@ fun AppNavigation(navController: NavHostController) {
         composable(route = "Support") {
             SuportScreen(navController)
         }
-        composable(Route.CategoryScreen.screen) { CategoryScreen(navController, categoryViewModel, {navController.popBackStack()}) }
-        composable(Route.Dish.screen) { DishScreen(navController, {navController.popBackStack()},dishViewModel,categoryViewModel) }
+        composable(Route.CategoryScreen.screen) {
+            CategoryScreen(navController, categoryViewModel)
+        }
+        composable(Route.Dish.screen) {
+            DishScreen(navController, dishViewModel, categoryViewModel)
+        }
         composable(route = "ManagerCategory") {
             ManagerCategoriesScreen(navController)
         }
@@ -60,3 +64,4 @@ fun AppNavigation(navController: NavHostController) {
         }
     }
 }
+
