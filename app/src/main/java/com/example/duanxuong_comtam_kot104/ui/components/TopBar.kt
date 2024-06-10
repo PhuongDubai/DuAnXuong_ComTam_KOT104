@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -67,4 +68,32 @@ fun MyToolbar(
             actionIconContentColor = MaterialTheme.colorScheme.onSecondary
         )
     )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ToolbarNoBack(
+    title: String
+) {
+    TopAppBar(
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(50.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = title, color = Color.White)
+
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color("#221F1F".toColorInt()),
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onSecondary
+        )
+    )
+    Divider(thickness = 2.dp, color = Color.Black)
 }

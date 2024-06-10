@@ -38,11 +38,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
+import com.example.duanxuong_comtam_kot104.ui.components.ToolbarNoBack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuportScreen(navController: NavController) {
     Scaffold(
+        topBar = {
+            ToolbarNoBack(
+                title = "Cum tứm đim",
+            )
+        },
         content = { paddingValues: PaddingValues ->
             Box(
                 modifier = Modifier

@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,15 +29,42 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.duanxuong_comtam_kot104.R
+import com.example.duanxuong_comtam_kot104.data.user.UserDB
 import com.example.duanxuong_comtam_kot104.ui.theme.interFontFamily
 import com.example.duanxuong_comtam_kot104.viewmodel.LoginViewModel
+import com.example.duanxuong_comtam_kot104.viewmodel.LoginViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
     val context = LocalContext.current
+    val dbUser = UserDB.getIntance(context)
+    val userDao = dbUser.UserDAO()
+    val loginViewModel: LoginViewModel = viewModel(
+        factory = LoginViewModelFactory(userDao)
+    )
+    loginViewModel.insertSampleAdminIfNeeded()
+
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    val isAuthenticated by loginViewModel.isAuthenticated.observeAsState()
+    val role by loginViewModel.isRole.observeAsState()
+
+    // Sử dụng derivedStateOf để liên tục theo dõi isAuthenticated
+    val isAuthenticatedState by remember { derivedStateOf { isAuthenticated } }
+
+    LaunchedEffect(isAuthenticatedState) {
+        if (isAuthenticatedState == true) {
+            Toast.makeText(context, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
+            navController.navigate("Home")
+        } else if (isAuthenticatedState == false) {
+            Toast.makeText(context, "Tên đăng nhập hoặc mật khẩu không đúng", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +73,7 @@ fun LoginScreen(navController: NavController) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Upper Half: Logo and Text
+            // Phần trên: Logo và Văn bản
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -72,11 +100,9 @@ fun LoginScreen(navController: NavController) {
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
-
-
             }
 
-            // Lower Half: Login Form
+            // Phần dưới: Form đăng nhập
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -97,7 +123,8 @@ fun LoginScreen(navController: NavController) {
                         unfocusedBorderColor = Color.Gray,
                         focusedLabelColor = Color.White,
                         unfocusedLabelColor = Color.Gray,
-                        focusedTextColor = Color.White
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
                     )
                 )
 
@@ -107,7 +134,22 @@ fun LoginScreen(navController: NavController) {
                     value = password,
                     onValueChange = { password = it },
                     label = { Text("Mật khẩu") },
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        val image = if (passwordVisible) {
+                            painterResource(id = R.drawable.ic_visibility)
+                        } else {
+                            painterResource(id = R.drawable.ic_visibility_off)
+                        }
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                painter = image,
+                                contentDescription = "Toggle password visibility",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 40.dp),
@@ -116,7 +158,8 @@ fun LoginScreen(navController: NavController) {
                         unfocusedBorderColor = Color.Gray,
                         focusedLabelColor = Color.White,
                         unfocusedLabelColor = Color.Gray,
-                        focusedTextColor = Color.White
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
                     )
                 )
 
@@ -124,11 +167,18 @@ fun LoginScreen(navController: NavController) {
 
                 Button(
                     onClick = {
-                        if (username.isNotBlank() && password.isNotBlank()) {
-                            navController.navigate("Home")
-                        } else {
-                            // Hiển thị thông báo lỗi khi thông tin đăng nhập trống
-                            Toast.makeText(context, "Vui lòng nhập tên đăng nhập và mật khẩu", Toast.LENGTH_SHORT).show()
+                        when {
+                            username.isEmpty() || password.isEmpty() -> {
+                                Toast.makeText(
+                                    context,
+                                    "Tên đăng nhập và mật khẩu không được để trống",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            else -> {
+                                loginViewModel.login(username, password)
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -159,4 +209,6 @@ fun LoginScreen(navController: NavController) {
         }
     }
 }
+
+
 
