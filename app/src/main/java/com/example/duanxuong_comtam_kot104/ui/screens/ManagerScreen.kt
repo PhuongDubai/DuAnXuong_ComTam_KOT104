@@ -10,16 +10,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.comtam_kotlin_room.utils.Route
 import com.example.duanxuong_comtam_kot104.R
+import com.example.duanxuong_comtam_kot104.ui.components.ToolbarNoBack
 
 @Composable
 fun ManagerScreen(navController: NavController) {
     Scaffold(
+        topBar = {
+            ToolbarNoBack(
+                title = "Cum tứm đim",
+            )
+        },
         content = { paddingValues: PaddingValues ->
             Box(
                 modifier = Modifier
@@ -36,7 +43,7 @@ fun ManagerScreen(navController: NavController) {
                     Column {
                         Row(
                             modifier = Modifier
-                                .padding(top=50.dp, start = 20.dp)
+                                .padding(top=20.dp, start = 20.dp)
                                 .clickable { navController.navigate(Route.CategoryScreen.screen) },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
